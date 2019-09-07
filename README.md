@@ -10,20 +10,29 @@ Certificate connection doesn't checked yet.
 Basic usage:
 
 
-    func getDefaultConnectionConfig() *SSHClient {
-        return &SSHClient{
+    package main
+
+    import (
+        "bufio"
+        "fmt"
+        ssh "github.com/DmitriyDev/ssh_client"
+        "os"
+    )
+
+    func getDefaultConnectionConfig() *ssh.SSHClient {
+	    return &ssh.SSHClient{
             Ip:   "[host]",
             User: "[user]",
             Port: 22,
             Cert: "[password]",
         }
     }
-    
+
     func main() {
         reader := bufio.NewReader(os.Stdin)
-        connection := getDefaultConnectionConfig().Connect(CERT_PASSWORD)
+        connection := getDefaultConnectionConfig().Connect(ssh.CERT_PASSWORD)
         defer connection.Close()
-        
+    
         for {
             fmt.Print("$ ")
             cmdString, err := reader.ReadString('\n')
