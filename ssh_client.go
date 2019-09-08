@@ -68,11 +68,14 @@ func (ssh_client *SSHClient) Connect(mode int) Connection {
 		log.Fatal(err)
 	}
 
-	return Connection{
+	connection := Connection{
 		session: nil,
 		client:  client,
 	}
 
+	connection.newSession()
+
+	return connection
 }
 
 func (connection *Connection) RunCmd(cmd string) (error, string) {
@@ -82,11 +85,16 @@ func (connection *Connection) RunCmd(cmd string) (error, string) {
 }
 
 func (connection *Connection) Close() {
-	connection.session.Close()
+	if connection.session != nil {
+		connection.session.Close()
+	}
 	connection.client.Close()
 }
 
 func (connection *Connection) newSession() {
+	if connection.session != nil {
+		connection.session.Close()
+	}
 	var err error
 	connection.session, err = connection.client.NewSession()
 	if err != nil {
